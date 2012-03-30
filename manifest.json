@@ -1,0 +1,9 @@
+{
+  "name": "WebNotes",
+  "version": "1.0",
+  "description": "Take notes while browsing the web.",
+  "browser_action": {
+    "default_icon": "notepad.png",
+    "popup": "popup.html"
+  }
+}
