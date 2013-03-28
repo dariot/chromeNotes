@@ -1,9 +1,9 @@
 {
-  "name": "WebNotes",
-  "version": "1.0",
+  "name": "ChromeNotes",
+  "version": "1.1",
   "description": "Take notes while browsing the web.",
   "browser_action": {
-    "default_icon": "notepad.png",
+    "default_icon": "img/notepad.png",
     "popup": "popup.html"
   }
 }
