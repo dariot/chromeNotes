@@ -9,16 +9,16 @@ $(document).ready(function () {
 		content = $("#content"),
 		IMG_WIDTH = 15,
 		IMG_HEIGHT = 15,
-		IMG_BASE_PATH = "/img",
+		IMG_BASE_PATH = "img",
 		EDIT_BTN_PATH = IMG_BASE_PATH + "/edit.png",
 		DELETE_BTN_PATH = IMG_BASE_PATH + "/delete.png";
 
 	function load() {
 		var i;
-		if (!localStorage.getItem("notes") || localStorage.getItem("notes") === "") {
+		if (!localStorage.notes || localStorage.notes === "") {
 			html = "You don't have any notes.";
 		} else {
-			savedNotes = JSON.parse(localStorage.getItem("notes")).notes;
+			savedNotes = JSON.parse(localStorage.notes);
 			for (i = 0; i < savedNotes.length; i++) {
 				html = "<div class='note'>" +
 					"<img id='edit" + i + "' src='" + EDIT_BTN_PATH + "' width='" + IMG_WIDTH + "' height='" + IMG_HEIGHT + "' onclick='edit(" + savedNotes[i].id + ")'/>" +
@@ -28,20 +28,18 @@ $(document).ready(function () {
 			}
 		}
 		content.append("<br/>" + html);
-		if (localStorage.getItem("notes")) {
-			content.append("<input type='button' id='removeButton' value='Remove all notes' onclick='removeAll()'/><br/>");
+		if (localStorage.notes) {
+			content.append("<input type='button' id='removeButton' value='Remove all notes'/><br/>");
 		}
 	}
 
 	function init() {
-		html = "<input type='button' id='newButton' value='New note'/><br/>" +
-			"<input type='button' id='clearStorage' value='Clear localStorage'/><br/>";
+		html = "<input type='button' id='newButton' value='New note'/><br/>";
 		content.html(html);
+		console.log(localStorage);
+		//localStorage.clear();
 		load();
 		
-		content.on("click", "#clearStorage", function(ev) {
-			localStorage.clear();
-		});
 		content.on("click", "[id^=edit]", function(ev) {
 			console.log(ev);
 		});
@@ -69,8 +67,8 @@ $(document).ready(function () {
 	function maxId() {
 		var i,
 			max = 0;
-		if (localStorage.getItem("notes")) {
-			savedNotes = JSON.parse(localStorage.getItem("notes")).notes;
+		if (localStorage.notes) {
+			savedNotes = JSON.parse(localStorage.notes);
 			for (i = 0; i < savedNotes.length; i++) {
 				if (savedNotes[i].id > max) {
 					max = savedNotes[i].id;
@@ -83,21 +81,18 @@ $(document).ready(function () {
 	function save(noteId) {
 		var i, o, toAdd, notes;
 
-		console.log(noteId);
-
 		if (!noteId || noteId === "") {
 			noteId = maxId() + 1;
 		}
 
-		if (!localStorage.getItem("notes")) {
-			o = {
+		if (!localStorage.notes) {
+			o = [];
+			o.push({
 				id: noteId,
 				title: $("#title").val(),
 				text: $("#text").val()
-			};
-			localStorage.setItem("notes", {
-				notes: [JSON.stringify(o)]
 			});
+			localStorage.notes = JSON.stringify(o);
 		} else {
 			toAdd = {
 				id: noteId,
@@ -105,27 +100,25 @@ $(document).ready(function () {
 				text: $("#text").val()
 			};
 			if (noteId > maxId()) {
-				notes = localStorage.getItem("notes");
+				notes = localStorage.notes;
 				o = notes.substring(0, notes.length - 2) + ", " + JSON.stringify(toAdd) + "]}";
 			} else {
-				savedNotes = JSON.parse(localStorage.getItem("notes")).notes;
+				savedNotes = JSON.parse(localStorage.notes);
 				savedNotes[noteId - 1] = JSON.stringify(toAdd);
 				for (i = 0; i < savedNotes.length; i++) {
 					if ( i !== (noteId - 1) ) {
 						savedNotes[i] = JSON.stringify(savedNotes[i]);
 					}
 				}
-				o = {
-					notes: [savedNotes]
-				};
+				o = savedNotes;
 			}
-			localStorage.setItem("notes", o);
+			localStorage.notes.push(o);
 		}
 		init();
 	}
 
 	function edit(noteId) {
-		savedNotes = JSON.parse(localStorage.getItem("notes")).notes;
+		savedNotes = JSON.parse(localStorage.notes);
 		html = "<form id='editNoteForm'>" +
 			"Title: <input type='text' id='title' value='" + savedNotes[noteId - 1].title + "' style='width:200px'/><br/>" +
 			"Text: <textarea rows='5' id='text' style='width:200px'>" + savedNotes[noteId - 1].text + "</textarea><br/><br/>" +
@@ -140,7 +133,7 @@ $(document).ready(function () {
 	function remove(noteId) {
 		var i;
 		if (confirm("Are you sure you want to delete this note?")) {
-			savedNotes = JSON.parse(localStorage.getItem("notes")).notes;
+			savedNotes = JSON.parse(localStorage.notes);
 			if (savedNotes.length === 1) {
 				localStorage.removeItem("notes");
 			} else {
@@ -151,9 +144,7 @@ $(document).ready(function () {
 					}
 					savedNotes[i] = JSON.stringify(savedNotes[i]);
 				}
-				localStorage.setItem("notes", {
-					notes: [savedNotes]
-				});
+				localStorage.notes = [savedNotes];
 			}
 			init();
 		}
