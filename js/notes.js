@@ -79,20 +79,19 @@ $(document).ready(function () {
 	}
 
 	function save(noteId) {
-		var i, o, toAdd, notes;
+		var i, o, toAdd, notes = [];
 
 		if (!noteId || noteId === "") {
 			noteId = maxId() + 1;
 		}
 
 		if (!localStorage.notes) {
-			o = [];
-			o.push({
+			notes.push({
 				id: noteId,
 				title: $("#title").val(),
 				text: $("#text").val()
 			});
-			localStorage.notes = JSON.stringify(o);
+			localStorage.notes = JSON.stringify(notes);
 		} else {
 			toAdd = {
 				id: noteId,
