@@ -1,14 +1,28 @@
 <!DOCTYPE html>
 
 <head>
-	<title>ChromeNotes</title>
+    <meta charset="UTF-8">
 
-	<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
-	<script type="text/javascript" src="js/notes.js"></script>
+    <script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>  
+    <script type="text/javascript" src="js/notes.js"></script>
+
+    <title>ChromeNotes</title>
 </head>
 
 <body>
-	<div id="content"></div>
+    <input type="button" id="removeAll" value="Remove all notes"/>
+    <input type="button" id="createNote" value="Create note"/>
+    <input type="button" id="back" value="Back"/>
+    <div id="storedNotes"></div>
+    <div id="newNote">
+        <form>
+            <b>Title</b><br/>
+            <input type="text" id="title" style="width:200px"/><br/>
+            <b>Content</b><br/>
+            <textarea rows="5" id="content" style="width:200px"></textarea><br/><br/>
+            <input type="button" id="saveNote" value="Save note"/>
+        </form>
+    </div>
 </body>
 
 </html>
