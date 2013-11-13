@@ -14,35 +14,41 @@ $(document).ready ->
         $('#newNote').hide()
         $('#createNote').show()
 
+    calculateNewId = ->
+        #notes = JSON.parse(localStorage['chromeNotes'])
+
     setListeners = ->
         $('#removeAll').on 'click', ->
-            clearStorage()
-            alert 'Removed all notes.'
+            ans = confirm "Are you sure you want to remove all notes?"
+            if ans
+                clearStorage()
 
         $('#createNote').on 'click', ->
             $(this).hide()
             $('#back').show()
             $('#newNote').show()
+            $('#title').empty()
+            $('#content').empty()
 
         $('#saveNote').on 'click', ->
-            notes = localStorage
-            console.log localStorage
-            if notes is not null and notes is not ''
-                #
+            notes = JSON.parse(localStorage['chromeNotes'])
+            if notes.length > 0
+                newId = calculateNewId()
             else
                 localStorage['chromeNotes'] = ''
                 newNote = 
-                    id: '000'
-                    title: $('#title').val().trim()
-                    content: $('#content').val().trim()
-                localStorage['chromeNotes'] = JSON.stringify(newNote)
+                    "id": '000'
+                    "title": $('#title').val().trim()
+                    "content": $('#content').val().trim()
+                ar = [newNote]
+                localStorage['chromeNotes'] = JSON.stringify(ar)
                 back()
 
         $('#back').on 'click', ->
             back()
 
     loadNotes = ->
-        notes = window['localStorage'].getItem 'chromeNotes'
+        notes = JSON.parse(localStorage['chromeNotes'])
 
     init = ->
         storageSupport = checkLocalStorage()
