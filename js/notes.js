@@ -18,7 +18,12 @@ $(document).ready(function() {
     $('#newNote').hide();
     return $('#createNote').show();
   };
-  calculateNewId = function() {};
+  calculateNewId = function() {
+    var notes;
+    if (!$.isEmptyObject(localStorage)) {
+      return notes = JSON.parse(localStorage['chromeNotes']);
+    }
+  };
   setListeners = function() {
     $('#removeAll').on('click', function() {
       var ans;
@@ -57,7 +62,9 @@ $(document).ready(function() {
   };
   loadNotes = function() {
     var notes;
-    return notes = JSON.parse(localStorage['chromeNotes']);
+    if (!$.isEmptyObject(localStorage)) {
+      return notes = JSON.parse(localStorage['chromeNotes']);
+    }
   };
   init = function() {
     var storageSupport;

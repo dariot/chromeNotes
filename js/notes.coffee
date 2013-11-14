@@ -15,7 +15,8 @@ $(document).ready ->
         $('#createNote').show()
 
     calculateNewId = ->
-        #notes = JSON.parse(localStorage['chromeNotes'])
+        if not $.isEmptyObject(localStorage)
+            notes = JSON.parse(localStorage['chromeNotes'])
 
     setListeners = ->
         $('#removeAll').on 'click', ->
@@ -48,7 +49,9 @@ $(document).ready ->
             back()
 
     loadNotes = ->
-        notes = JSON.parse(localStorage['chromeNotes'])
+        if not $.isEmptyObject(localStorage)
+            notes = JSON.parse(localStorage['chromeNotes'])
+            
 
     init = ->
         storageSupport = checkLocalStorage()
