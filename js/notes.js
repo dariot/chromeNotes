@@ -42,6 +42,7 @@ $(document).ready(function() {
     });
     $('#createNote').on('click', function() {
       $(this).hide();
+      $('#storedNotes').empty();
       $('#back').show();
       return $('#newNote').show();
     });
@@ -79,15 +80,27 @@ $(document).ready(function() {
       localStorage['chromeNotes'] = JSON.stringify(ar);
       return back();
     });
-    return $('#back').on('click', function() {
+    $('#back').on('click', function() {
       return back();
+    });
+    return $('[id^=edit]').on('click', 'data', function() {
+      return console.log(data);
     });
   };
   loadNotes = function() {
-    var notes;
+    var html, idx, notes, _results;
     if (!$.isEmptyObject(localStorage)) {
       notes = JSON.parse(localStorage['chromeNotes']);
-      return console.log(notes);
+      _results = [];
+      for (idx in notes) {
+        html = '<div id="note' + notes[idx].id + '">';
+        html += '<img id="edit' + notes[idx].id + '" src="img/edit.png" height="15px" width="15px"/>';
+        html += '<img id="delete' + notes[idx].id + '" src="img/delete.png" height="15px" width="15px"/>';
+        html += notes[idx].title;
+        html += '</div>';
+        _results.push($('#storedNotes').append(html));
+      }
+      return _results;
     }
   };
   init = function() {

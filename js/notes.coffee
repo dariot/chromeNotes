@@ -32,6 +32,7 @@ $(document).ready ->
 
         $('#createNote').on 'click', ->
             $(this).hide()
+            $('#storedNotes').empty()
             $('#back').show()
             $('#newNote').show()
 
@@ -67,10 +68,19 @@ $(document).ready ->
         $('#back').on 'click', ->
             back()
 
+        $('[id^=edit]').on 'click', 'data', ->
+            console.log data
+
     loadNotes = ->
         if not $.isEmptyObject(localStorage)
             notes = JSON.parse(localStorage['chromeNotes'])
-            console.log notes            
+            for idx of notes
+                html = '<div id="note' + notes[idx].id + '">'
+                html += '<img id="edit' + notes[idx].id + '" src="img/edit.png" height="15px" width="15px"/>'
+                html += '<img id="delete' + notes[idx].id + '" src="img/delete.png" height="15px" width="15px"/>'
+                html += notes[idx].title
+                html += '</div>'
+                $('#storedNotes').append html
 
     init = ->
         storageSupport = checkLocalStorage()
