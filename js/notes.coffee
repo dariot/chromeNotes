@@ -13,10 +13,16 @@ $(document).ready ->
         $('#back').hide()
         $('#newNote').hide()
         $('#createNote').show()
+        loadNotes()
 
     calculateNewId = ->
         if not $.isEmptyObject(localStorage)
             notes = JSON.parse(localStorage['chromeNotes'])
+            maxId = 0
+            for note of notes
+                if note.id > maxId
+                    maxId = note.id
+            maxId + 1
 
     setListeners = ->
         $('#removeAll').on 'click', ->
@@ -28,22 +34,35 @@ $(document).ready ->
             $(this).hide()
             $('#back').show()
             $('#newNote').show()
-            $('#title').empty()
-            $('#content').empty()
+
+        $('#title').on 'hide', ->
+            $(this).empty()
+
+        $('#content').on 'hide', ->
+            $(this).empty()
 
         $('#saveNote').on 'click', ->
-            notes = JSON.parse(localStorage['chromeNotes'])
+            if not $.isEmptyObject(localStorage)
+                notes = JSON.parse(localStorage['chromeNotes'])
+            else
+                notes = []
             if notes.length > 0
                 newId = calculateNewId()
+                newNote = 
+                    "id": newId
+                    "title": $('#title').val().trim()
+                    "content": $('#content').val().trim()
+                notes.push newNote
+                ar = notes
             else
                 localStorage['chromeNotes'] = ''
                 newNote = 
-                    "id": '000'
+                    "id": 0
                     "title": $('#title').val().trim()
                     "content": $('#content').val().trim()
                 ar = [newNote]
-                localStorage['chromeNotes'] = JSON.stringify(ar)
-                back()
+            localStorage['chromeNotes'] = JSON.stringify(ar)
+            back()
 
         $('#back').on 'click', ->
             back()
@@ -51,7 +70,7 @@ $(document).ready ->
     loadNotes = ->
         if not $.isEmptyObject(localStorage)
             notes = JSON.parse(localStorage['chromeNotes'])
-            
+            console.log notes            
 
     init = ->
         storageSupport = checkLocalStorage()

@@ -16,12 +16,20 @@ $(document).ready(function() {
   back = function() {
     $('#back').hide();
     $('#newNote').hide();
-    return $('#createNote').show();
+    $('#createNote').show();
+    return loadNotes();
   };
   calculateNewId = function() {
-    var notes;
+    var maxId, note, notes;
     if (!$.isEmptyObject(localStorage)) {
-      return notes = JSON.parse(localStorage['chromeNotes']);
+      notes = JSON.parse(localStorage['chromeNotes']);
+      maxId = 0;
+      for (note in notes) {
+        if (note.id > maxId) {
+          maxId = note.id;
+        }
+      }
+      return maxId + 1;
     }
   };
   setListeners = function() {
@@ -35,26 +43,41 @@ $(document).ready(function() {
     $('#createNote').on('click', function() {
       $(this).hide();
       $('#back').show();
-      $('#newNote').show();
-      $('#title').empty();
-      return $('#content').empty();
+      return $('#newNote').show();
+    });
+    $('#title').on('hide', function() {
+      return $(this).empty();
+    });
+    $('#content').on('hide', function() {
+      return $(this).empty();
     });
     $('#saveNote').on('click', function() {
       var ar, newId, newNote, notes;
-      notes = JSON.parse(localStorage['chromeNotes']);
+      if (!$.isEmptyObject(localStorage)) {
+        notes = JSON.parse(localStorage['chromeNotes']);
+      } else {
+        notes = [];
+      }
       if (notes.length > 0) {
-        return newId = calculateNewId();
+        newId = calculateNewId();
+        newNote = {
+          "id": newId,
+          "title": $('#title').val().trim(),
+          "content": $('#content').val().trim()
+        };
+        notes.push(newNote);
+        ar = notes;
       } else {
         localStorage['chromeNotes'] = '';
         newNote = {
-          "id": '000',
+          "id": 0,
           "title": $('#title').val().trim(),
           "content": $('#content').val().trim()
         };
         ar = [newNote];
-        localStorage['chromeNotes'] = JSON.stringify(ar);
-        return back();
       }
+      localStorage['chromeNotes'] = JSON.stringify(ar);
+      return back();
     });
     return $('#back').on('click', function() {
       return back();
@@ -63,7 +86,8 @@ $(document).ready(function() {
   loadNotes = function() {
     var notes;
     if (!$.isEmptyObject(localStorage)) {
-      return notes = JSON.parse(localStorage['chromeNotes']);
+      notes = JSON.parse(localStorage['chromeNotes']);
+      return console.log(notes);
     }
   };
   init = function() {
