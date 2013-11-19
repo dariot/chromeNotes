@@ -24,6 +24,10 @@ $(document).ready ->
                     maxId = note.id
             maxId + 1
 
+    emptyFields = ->
+        $('#title').val('')
+        $('#content').val('')
+
     setListeners = ->
         $('#removeAll').on 'click', ->
             ans = confirm "Are you sure you want to remove all notes?"
@@ -35,12 +39,6 @@ $(document).ready ->
             $('#storedNotes').empty()
             $('#back').show()
             $('#newNote').show()
-
-        $('#title').on 'hide', ->
-            $(this).empty()
-
-        $('#content').on 'hide', ->
-            $(this).empty()
 
         $('#saveNote').on 'click', ->
             if not $.isEmptyObject(localStorage)
@@ -66,19 +64,23 @@ $(document).ready ->
             back()
 
         $('#back').on 'click', ->
+            emptyFields()
             back()
 
-        $('[id^=edit]').on 'click', 'data', ->
-            console.log data
+        $('#storedNotes').on 'click', '[id^="edit"]', (data) ->
+            console.log $(data.currentTarget).attr "id"
+
+        $('#storedNotes').on 'click', '[id^="delete"]', (data) ->
+            console.log $(data.currentTarget).attr "id"
 
     loadNotes = ->
         if not $.isEmptyObject(localStorage)
             notes = JSON.parse(localStorage['chromeNotes'])
             for idx of notes
                 html = '<div id="note' + notes[idx].id + '">'
-                html += '<img id="edit' + notes[idx].id + '" src="img/edit.png" height="15px" width="15px"/>'
-                html += '<img id="delete' + notes[idx].id + '" src="img/delete.png" height="15px" width="15px"/>'
-                html += notes[idx].title
+                html += '<img id="edit' + notes[idx].id + '" src="img/edit.png" />'
+                html += '<img id="delete' + notes[idx].id + '" src="img/delete.png" />'
+                html += '<b>' + notes[idx].title + '</b>'
                 html += '</div>'
                 $('#storedNotes').append html
 
