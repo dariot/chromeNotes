@@ -39,6 +39,9 @@ $(document).ready ->
             console.log JSON.stringify(notes)
             localStorage['chromeNotes'] = JSON.stringify(notes)
 
+    saveNote = (data, newNote) ->
+        
+
     setListeners = ->
         $('#removeAll').on 'click', ->
             ans = confirm 'Are you sure you want to remove all notes?'
