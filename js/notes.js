@@ -20,13 +20,13 @@ $(document).ready(function() {
     return loadNotes();
   };
   calculateNewId = function() {
-    var maxId, note, notes;
+    var i, maxId, notes;
     if (!$.isEmptyObject(localStorage)) {
       notes = JSON.parse(localStorage['chromeNotes']);
       maxId = 0;
-      for (note in notes) {
-        if (note.id > maxId) {
-          maxId = note.id;
+      for (i in notes) {
+        if (notes[i].id > maxId) {
+          maxId = notes[i].id;
         }
       }
       return maxId + 1;
@@ -37,26 +37,27 @@ $(document).ready(function() {
     return $('#content').val('');
   };
   removeNoteById = function(id) {
-    var idx, notes;
+    var i, notes;
     if (!$.isEmptyObject(localStorage)) {
       notes = JSON.parse(localStorage['chromeNotes']);
-      for (idx in notes) {
-        if (notes[idx].id = id) {
-          notes.splice(idx, 1);
+      for (i in notes) {
+        if (notes[i].id = id) {
+          notes.splice(i, 1);
           $('#note' + id).remove();
           break;
         }
       }
+      console.log(JSON.stringify(notes));
       return localStorage['chromeNotes'] = JSON.stringify(notes);
     }
   };
   setListeners = function() {
     $('#removeAll').on('click', function() {
       var ans;
-      ans = confirm("Are you sure you want to remove all notes?");
+      ans = confirm('Are you sure you want to remove all notes?');
       if (ans) {
         clearStorage();
-        return loadNotes();
+        return $('#storedNotes').empty();
       }
     });
     $('#createNote').on('click', function() {
@@ -90,14 +91,30 @@ $(document).ready(function() {
         };
         ar = [newNote];
       }
+      console.log(JSON.stringify(ar));
       localStorage['chromeNotes'] = JSON.stringify(ar);
+      emptyFields();
       return back();
     });
     $('#back').on('click', function() {
       emptyFields();
       return back();
     });
-    $('#storedNotes').on('click', '[id^="edit"]', function(data) {});
+    $('#storedNotes').on('click', '[id^="edit"]', function(data) {
+      var i, id, note, notes;
+      id = data.srcElement.id.replace('edit', '');
+      notes = JSON.parse(localStorage['chromeNotes']);
+      for (i in notes) {
+        if (notes[i].id = id) {
+          note = notes[i];
+          break;
+        }
+      }
+      $('#storedNotes').hide();
+      $('#newNote').show();
+      $('#title').val(note.title);
+      return $('#content').val(note.content);
+    });
     return $('#storedNotes').on('click', '[id^="delete"]', function(data) {
       var id;
       id = data.srcElement.id.replace('delete', '');
@@ -105,16 +122,16 @@ $(document).ready(function() {
     });
   };
   loadNotes = function() {
-    var html, idx, notes, _results;
+    var html, i, notes, _results;
     if (!$.isEmptyObject(localStorage)) {
       $('#storedNotes').empty();
       notes = JSON.parse(localStorage['chromeNotes']);
       _results = [];
-      for (idx in notes) {
-        html = '<div id="note' + notes[idx].id + '">';
-        html += '<img id="edit' + notes[idx].id + '" src="img/edit.png" />';
-        html += '<img id="delete' + notes[idx].id + '" src="img/delete.png" />';
-        html += '<b>' + notes[idx].title + '</b>';
+      for (i in notes) {
+        html = '<div id="note' + notes[i].id + '">';
+        html += '<img id="edit' + notes[i].id + '" src="img/edit.png" />';
+        html += '<img id="delete' + notes[i].id + '" src="img/delete.png" />';
+        html += '<b>' + notes[i].title + '</b>';
         html += '</div>';
         _results.push($('#storedNotes').append(html));
       }

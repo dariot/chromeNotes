@@ -19,31 +19,32 @@ $(document).ready ->
         if not $.isEmptyObject(localStorage)
             notes = JSON.parse(localStorage['chromeNotes'])
             maxId = 0
-            for note of notes
-                if note.id > maxId
-                    maxId = note.id
+            for i of notes
+                if notes[i].id > maxId
+                    maxId = notes[i].id
             maxId + 1
 
     emptyFields = ->
-        $('#title').val('')
-        $('#content').val('')
+        $('#title').val ''
+        $('#content').val ''
 
     removeNoteById = (id) ->
         if not $.isEmptyObject(localStorage)
             notes = JSON.parse(localStorage['chromeNotes'])
-            for idx of notes
-                if notes[idx].id = id
-                    notes.splice idx, 1
+            for i of notes
+                if notes[i].id = id
+                    notes.splice i, 1
                     $('#note' + id).remove()
                     break
+            console.log JSON.stringify(notes)
             localStorage['chromeNotes'] = JSON.stringify(notes)
 
     setListeners = ->
         $('#removeAll').on 'click', ->
-            ans = confirm "Are you sure you want to remove all notes?"
+            ans = confirm 'Are you sure you want to remove all notes?'
             if ans
                 clearStorage()
-                loadNotes()
+                $('#storedNotes').empty()
 
         $('#createNote').on 'click', ->
             $(this).hide()
@@ -71,7 +72,9 @@ $(document).ready ->
                     "title": $('#title').val().trim()
                     "content": $('#content').val().trim()
                 ar = [newNote]
+            console.log JSON.stringify(ar)
             localStorage['chromeNotes'] = JSON.stringify(ar)
+            emptyFields()
             back()
 
         $('#back').on 'click', ->
@@ -79,7 +82,16 @@ $(document).ready ->
             back()
 
         $('#storedNotes').on 'click', '[id^="edit"]', (data) ->
-            
+            id = data.srcElement.id.replace 'edit', ''
+            notes = JSON.parse(localStorage['chromeNotes'])
+            for i of notes
+                if notes[i].id = id
+                    note = notes[i]
+                    break;
+            $('#storedNotes').hide()
+            $('#newNote').show()
+            $('#title').val note.title
+            $('#content').val note.content
 
         $('#storedNotes').on 'click', '[id^="delete"]', (data) ->
             id = data.srcElement.id.replace 'delete', ''
@@ -89,11 +101,11 @@ $(document).ready ->
         if not $.isEmptyObject(localStorage)
             $('#storedNotes').empty()
             notes = JSON.parse(localStorage['chromeNotes'])
-            for idx of notes
-                html = '<div id="note' + notes[idx].id + '">'
-                html += '<img id="edit' + notes[idx].id + '" src="img/edit.png" />'
-                html += '<img id="delete' + notes[idx].id + '" src="img/delete.png" />'
-                html += '<b>' + notes[idx].title + '</b>'
+            for i of notes
+                html = '<div id="note' + notes[i].id + '">'
+                html += '<img id="edit' + notes[i].id + '" src="img/edit.png" />'
+                html += '<img id="delete' + notes[i].id + '" src="img/delete.png" />'
+                html += '<b>' + notes[i].title + '</b>'
                 html += '</div>'
                 $('#storedNotes').append html
 
