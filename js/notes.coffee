@@ -39,23 +39,8 @@ $(document).ready ->
             console.log JSON.stringify(notes)
             localStorage['chromeNotes'] = JSON.stringify(notes)
 
-    saveNote = (data, newNote) ->
-        
-
-    setListeners = ->
-        $('#removeAll').on 'click', ->
-            ans = confirm 'Are you sure you want to remove all notes?'
-            if ans
-                clearStorage()
-                $('#storedNotes').empty()
-
-        $('#createNote').on 'click', ->
-            $(this).hide()
-            $('#storedNotes').empty()
-            $('#back').show()
-            $('#newNote').show()
-
-        $('#saveNote').on 'click', ->
+    saveNote = (newNote, data) ->
+        if newNote
             if not $.isEmptyObject(localStorage)
                 notes = JSON.parse(localStorage['chromeNotes'])
             else
@@ -77,6 +62,31 @@ $(document).ready ->
                 ar = [newNote]
             console.log JSON.stringify(ar)
             localStorage['chromeNotes'] = JSON.stringify(ar)
+        else
+            if not $.isEmptyObject(localStorage)
+                notes = JSON.parse(localStorage['chromeNotes'])
+                for i of notes
+                    if notes[i].id = data.id
+                        notes[i].title = $('#title').val().trim()
+                        notes[i].content = $('#content').val().trim()
+                localStorage['chromeNotes'] = JSON.stringify(notes)
+
+
+    setListeners = ->
+        $('#removeAll').on 'click', ->
+            ans = confirm 'Are you sure you want to remove all notes?'
+            if ans
+                clearStorage()
+                $('#storedNotes').empty()
+
+        $('#createNote').on 'click', ->
+            $(this).hide()
+            $('#storedNotes').empty()
+            $('#back').show()
+            $('#newNote').show()
+
+        $('#saveNote').on 'click', ->
+            #todo: find out if it's a new note or an existing one
             emptyFields()
             back()
 
