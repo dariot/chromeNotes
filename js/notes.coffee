@@ -1,5 +1,7 @@
 $(document).ready ->
 
+    selectedNote = null
+
     checkLocalStorage = ->
         try
             'localStorage' of window
@@ -11,8 +13,10 @@ $(document).ready ->
 
     back = ->
         $('#back').hide()
-        $('#newNote').hide()
+        $('#noteEditor').hide()
+        $('#removeAll').show()
         $('#createNote').show()
+        $('#storedNotes').show()
         loadNotes()
 
     calculateNewId = ->
@@ -39,8 +43,8 @@ $(document).ready ->
             console.log JSON.stringify(notes)
             localStorage['chromeNotes'] = JSON.stringify(notes)
 
-    saveNote = (newNote, data) ->
-        if newNote
+    saveNote = ->
+        if selectedNote is null
             if not $.isEmptyObject(localStorage)
                 notes = JSON.parse(localStorage['chromeNotes'])
             else
@@ -66,11 +70,17 @@ $(document).ready ->
             if not $.isEmptyObject(localStorage)
                 notes = JSON.parse(localStorage['chromeNotes'])
                 for i of notes
-                    if notes[i].id = data.id
+                    if notes[i].id = selectedNote.id
                         notes[i].title = $('#title').val().trim()
                         notes[i].content = $('#content').val().trim()
                 localStorage['chromeNotes'] = JSON.stringify(notes)
 
+    showNoteEditor = ->
+        $('#storedNotes').hide()
+        $('#removeAll').hide()
+        $('#createNote').hide()
+        $('#back').show()
+        $('#noteEditor').show()
 
     setListeners = ->
         $('#removeAll').on 'click', ->
@@ -80,13 +90,11 @@ $(document).ready ->
                 $('#storedNotes').empty()
 
         $('#createNote').on 'click', ->
-            $(this).hide()
-            $('#storedNotes').empty()
-            $('#back').show()
-            $('#newNote').show()
+            showNoteEditor()
 
         $('#saveNote').on 'click', ->
-            #todo: find out if it's a new note or an existing one
+            saveNote()
+            selectedNote = null
             emptyFields()
             back()
 
@@ -101,8 +109,9 @@ $(document).ready ->
                 if notes[i].id = id
                     note = notes[i]
                     break;
+            selectedNote = note
             $('#storedNotes').hide()
-            $('#newNote').show()
+            $('#noteEditor').show()
             $('#title').val note.title
             $('#content').val note.content
 
@@ -124,7 +133,7 @@ $(document).ready ->
 
     init = ->
         storageSupport = checkLocalStorage()
-        $('#newNote').hide()
+        $('#noteEditor').hide()
         $('#back').hide()
         if storageSupport
             setListeners()
