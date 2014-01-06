@@ -26,7 +26,7 @@ $(document).ready ->
             for i of notes
                 if notes[i].id > maxId
                     maxId = notes[i].id
-            maxId + 1
+            parseInt(maxId + 1, 10)
 
     emptyFields = ->
         $('#title').val ''
@@ -35,8 +35,9 @@ $(document).ready ->
     removeNoteById = (id) ->
         if not $.isEmptyObject(localStorage)
             notes = JSON.parse(localStorage['chromeNotes'])
+            console.log JSON.stringify(notes)
             for i of notes
-                if notes[i].id = id
+                if parseInt(notes[i].id, 10) == parseInt(id, 10)
                     notes.splice i, 1
                     $('#note' + id).remove()
                     break
@@ -70,7 +71,7 @@ $(document).ready ->
             if not $.isEmptyObject(localStorage)
                 notes = JSON.parse(localStorage['chromeNotes'])
                 for i of notes
-                    if notes[i].id = selectedNote.id
+                    if parseInt(notes[i].id, 10) == parseInt(selectedNote.id, 10)
                         notes[i].title = $('#title').val().trim()
                         notes[i].content = $('#content').val().trim()
                 localStorage['chromeNotes'] = JSON.stringify(notes)
@@ -106,12 +107,11 @@ $(document).ready ->
             id = data.srcElement.id.replace 'edit', ''
             notes = JSON.parse(localStorage['chromeNotes'])
             for i of notes
-                if notes[i].id = id
+                if parseInt(notes[i].id, 10) == parseInt(id, 10)
                     note = notes[i]
+                    selectedNote = note
                     break;
-            selectedNote = note
-            $('#storedNotes').hide()
-            $('#noteEditor').show()
+            showNoteEditor()
             $('#title').val note.title
             $('#content').val note.content
 

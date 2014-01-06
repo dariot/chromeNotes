@@ -33,7 +33,7 @@
             maxId = notes[i].id;
           }
         }
-        return maxId + 1;
+        return parseInt(maxId + 1, 10);
       }
     };
     emptyFields = function() {
@@ -44,8 +44,9 @@
       var i, notes;
       if (!$.isEmptyObject(localStorage)) {
         notes = JSON.parse(localStorage['chromeNotes']);
+        console.log(JSON.stringify(notes));
         for (i in notes) {
-          if (notes[i].id = id) {
+          if (parseInt(notes[i].id, 10) === parseInt(id, 10)) {
             notes.splice(i, 1);
             $('#note' + id).remove();
             break;
@@ -87,7 +88,7 @@
         if (!$.isEmptyObject(localStorage)) {
           notes = JSON.parse(localStorage['chromeNotes']);
           for (i in notes) {
-            if (notes[i].id = selectedNote.id) {
+            if (parseInt(notes[i].id, 10) === parseInt(selectedNote.id, 10)) {
               notes[i].title = $('#title').val().trim();
               notes[i].content = $('#content').val().trim();
             }
@@ -130,16 +131,13 @@
         id = data.srcElement.id.replace('edit', '');
         notes = JSON.parse(localStorage['chromeNotes']);
         for (i in notes) {
-          if (notes[i].id = id) {
+          if (parseInt(notes[i].id, 10) === parseInt(id, 10)) {
             note = notes[i];
+            selectedNote = note;
             break;
           }
         }
-        selectedNote = note;
-        console.log(id);
-        console.log(selectedNote);
-        $('#storedNotes').hide();
-        $('#noteEditor').show();
+        showNoteEditor();
         $('#title').val(note.title);
         return $('#content').val(note.content);
       });
