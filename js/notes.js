@@ -44,7 +44,6 @@
       var i, notes;
       if (!$.isEmptyObject(localStorage)) {
         notes = JSON.parse(localStorage['chromeNotes']);
-        console.log(JSON.stringify(notes));
         for (i in notes) {
           if (parseInt(notes[i].id, 10) === parseInt(id, 10)) {
             notes.splice(i, 1);
@@ -52,7 +51,6 @@
             break;
           }
         }
-        console.log(JSON.stringify(notes));
         return localStorage['chromeNotes'] = JSON.stringify(notes);
       }
     };
@@ -82,7 +80,6 @@
           };
           ar = [newNote];
         }
-        console.log(JSON.stringify(ar));
         return localStorage['chromeNotes'] = JSON.stringify(ar);
       } else {
         if (!$.isEmptyObject(localStorage)) {

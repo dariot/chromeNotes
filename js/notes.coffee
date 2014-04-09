@@ -35,13 +35,11 @@ $(document).ready ->
     removeNoteById = (id) ->
         if not $.isEmptyObject(localStorage)
             notes = JSON.parse(localStorage['chromeNotes'])
-            console.log JSON.stringify(notes)
             for i of notes
                 if parseInt(notes[i].id, 10) == parseInt(id, 10)
                     notes.splice i, 1
                     $('#note' + id).remove()
                     break
-            console.log JSON.stringify(notes)
             localStorage['chromeNotes'] = JSON.stringify(notes)
 
     saveNote = ->
@@ -65,7 +63,6 @@ $(document).ready ->
                     "title": $('#title').val().trim()
                     "content": $('#content').val().trim()
                 ar = [newNote]
-            console.log JSON.stringify(ar)
             localStorage['chromeNotes'] = JSON.stringify(ar)
         else
             if not $.isEmptyObject(localStorage)
